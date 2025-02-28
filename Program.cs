@@ -27,15 +27,6 @@ static (BigInteger Fib, BigInteger Luc) Fibonacci(BigInteger  n)
     // Base case
     if (n == 0) return (0, 2);
     
-    // Handle negative indices
-    if (n < 0)
-    {
-        n *= -1;
-        var (fib, luc) = Fibonacci(n);
-        var k = n % 2 * 2 - 1;
-        return (fib * k, luc * k);
-    }
-    
     // Odd case
     if (n % 2 == 1)
     {
@@ -44,10 +35,10 @@ static (BigInteger Fib, BigInteger Luc) Fibonacci(BigInteger  n)
     }
     
     // Even case
-    n >>= 1;
+    n >>= 1; // divide n by 2
     var k2 = n % 2 * 2 - 1;
     var (f, l) = Fibonacci(n);
-    return (f * l, l * l + 2 * k2);
+    return (BigInteger.Multiply(f,l), BigInteger.Pow(l,2) + 2 * k2);
     
     // if (n == 0) return (0, 2);
     //
