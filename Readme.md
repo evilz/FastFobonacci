@@ -26,7 +26,7 @@ dotnet test -c Release
 ## Benchmark
 
 ```bash
-dotnet run --project /tmp/workspace/evilz/FastFobonacci/benchmarks/FastFibonacci.Benchmarks/FastFibonacci.Benchmarks.csproj -c Release -- --filter '*'
+dotnet run --project benchmarks/FastFibonacci.Benchmarks/FastFibonacci.Benchmarks.csproj -c Release -- --filter '*'
 ```
 
 The benchmark compares:
