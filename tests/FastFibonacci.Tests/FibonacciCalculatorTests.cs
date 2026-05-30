@@ -4,7 +4,7 @@ using FastFibonacci;
 
 namespace FastFibonacci.Tests;
 
-public class UnitTest1
+public class FibonacciCalculatorTests
 {
     [Theory]
     [InlineData("0", "0")]
