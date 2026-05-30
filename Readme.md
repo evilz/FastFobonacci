@@ -14,7 +14,7 @@ dotnet build -c Release
 ## Run
 
 ```bash
-dotnet run --project /tmp/workspace/evilz/FastFobonacci/FastFibonacci.csproj -c Release -- 10000
+dotnet run --project FastFibonacci.csproj -c Release -- 10000
 ```
 
 ## Test
