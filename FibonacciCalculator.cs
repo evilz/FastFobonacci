@@ -13,30 +13,36 @@ public static class FibonacciCalculator
     public static BigInteger Lucas(BigInteger n)
     {
         ThrowIfNegative(n);
-        var (fib, nextFib) = GetPairCore(n);
-        return (nextFib << 1) - fib;
+        return GetPairCore(n).Luc;
     }
 
-    internal static (BigInteger Fib, BigInteger NextFib) GetPair(BigInteger n)
+    internal static (BigInteger Fib, BigInteger Luc) GetPair(BigInteger n)
     {
         ThrowIfNegative(n);
         return GetPairCore(n);
     }
 
-    private static (BigInteger Fib, BigInteger NextFib) GetPairCore(BigInteger n)
+    private static (BigInteger Fib, BigInteger Luc) GetPairCore(BigInteger n)
     {
         if (n.IsZero)
         {
-            return (BigInteger.Zero, BigInteger.One);
+            return (BigInteger.Zero, new BigInteger(2));
         }
 
-        var (fib, nextFib) = GetPairCore(n >> 1);
-        var doubledFib = fib * ((nextFib << 1) - fib);
-        var doubledNextFib = (fib * fib) + (nextFib * nextFib);
+        var half = n >> 1;
+        var (fib, luc) = GetPairCore(half);
+        var doubledFib = fib * luc;
+        var doubledLuc = (luc * luc) - ((half.IsEven ? BigInteger.One : BigInteger.MinusOne) << 1);
 
         return n.IsEven
-            ? (doubledFib, doubledNextFib)
-            : (doubledNextFib, doubledFib + doubledNextFib);
+            ? (doubledFib, doubledLuc)
+            : OddPairFromEven(doubledFib, doubledLuc);
+    }
+
+    private static (BigInteger Fib, BigInteger Luc) OddPairFromEven(BigInteger evenFib, BigInteger evenLuc)
+    {
+        var oddFib = (evenFib + evenLuc) >> 1;
+        return (oddFib, oddFib + (evenFib << 1));
     }
 
     private static void ThrowIfNegative(BigInteger n)
