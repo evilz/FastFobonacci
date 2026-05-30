@@ -1,57 +1,53 @@
 ﻿using System.Diagnostics;
 using System.Numerics;
-
-
-
-Stopwatch stopwatch = new Stopwatch();
-stopwatch.Start();
+using FastFibonacci;
 
 #if DEBUG
-var n = 5;
-var (result,_) = Fibonacci(n);
-stopwatch.Stop();
-Console.WriteLine($"Result : {result} in {stopwatch.Elapsed.TotalMilliseconds} ms");
-
+var n = new BigInteger(5);
 #else
-var n = int.Parse(args[0].Trim());
-Fibonacci(n);
+if (!TryGetInput(args, out var n, out var errorMessage))
+{
+    Console.Error.WriteLine(errorMessage);
+    return 1;
+}
+#endif
+
+var stopwatch = Stopwatch.StartNew();
+var fibonacci = FibonacciCalculator.Fibonacci(n);
 stopwatch.Stop();
-TimeSpan timeSpan = stopwatch.Elapsed;
+
+#if DEBUG
+Console.WriteLine($"F({n}) = {fibonacci} in {stopwatch.Elapsed.TotalMilliseconds} ms");
+#else
+GC.KeepAlive(fibonacci);
 Console.WriteLine(FormatTimeSpanWithNanoseconds(stopwatch.Elapsed));
 #endif
 
-return;
+return 0;
 
-static (BigInteger Fib, BigInteger Luc) Fibonacci(BigInteger  n)
+static bool TryGetInput(string[] args, out BigInteger n, out string errorMessage)
 {
-    // Base case
-    if (n == 0) return (0, 2);
-    
-    // Odd case
-    if (n % 2 == 1)
+    if (args.Length != 1)
     {
-        var (fib, luc) = Fibonacci(n - 1);
-        return ((fib + luc) / 2, (5 * fib + luc) / 2);
+        n = default;
+        errorMessage = "Usage: FastFibonacci <non-negative n>";
+        return false;
     }
-    
-    // Even case
-    n >>= 1; // divide n by 2
-    var k2 = n % 2 * 2 - 1;
-    var (f, l) = Fibonacci(n);
-    return (BigInteger.Multiply(f,l), BigInteger.Pow(l,2) + 2 * k2);
-    
-    // if (n == 0) return (0, 2);
-    //
-    // if (n % 2 == 1)
-    // {
-    //     var (fib, luc) = Fibonacci(n - 1);
-    //     return ((fib + luc) /2 ,(5 * fib +luc) /2) ;
-    // }
-    //
-    // n >>= 1;
-    // var k = n % 2 * 2 - 1;
-    // var (f, l) = Fibonacci(n );
-    // return (f * l, l * l + 2 * k);
+
+    if (!BigInteger.TryParse(args[0].Trim(), out n))
+    {
+        errorMessage = $"Invalid integer input: '{args[0]}'.";
+        return false;
+    }
+
+    if (n < 0)
+    {
+        errorMessage = "n must be non-negative.";
+        return false;
+    }
+
+    errorMessage = string.Empty;
+    return true;
 }
 
 static string FormatTimeSpanWithNanoseconds(TimeSpan timeSpan)
